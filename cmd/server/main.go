@@ -15,9 +15,9 @@ import (
 	"google.golang.org/grpc/peer"
 	"google.golang.org/grpc/reflection"
 
-	"github.com/adityapk00/lightwalletd/common"
-	"github.com/adityapk00/lightwalletd/frontend"
-	"github.com/adityapk00/lightwalletd/walletrpc"
+	"github.com/DenioD/lightwalletd/common"
+	"github.com/DenioD/lightwalletd/frontend"
+	"github.com/DenioD/lightwalletd/walletrpc"
 )
 
 var log *logrus.Entry
@@ -81,32 +81,32 @@ type Options struct {
 	tlsKeyPath    string `json:"tls_cert_key,omitempty"`
 	logLevel      uint64 `json:"log_level,omitempty"`
 	logPath       string `json:"log_file,omitempty"`
-	zcashConfPath string `json:"zcash_conf,omitempty"`
-	cacheSize     int    `json:"zcash_conf,omitempty"`
+	hush3ConfPath string `json:"hush3_conf,omitempty"`
+	cacheSize     int    `json:"hush3_conf,omitempty"`
 }
 
 func main() {
 	opts := &Options{}
-	flag.StringVar(&opts.bindAddr, "bind-addr", "127.0.0.1:9067", "the address to listen on")
+	flag.StringVar(&opts.bindAddr, "bind-addr", "127.0.0.1:9069", "the address to listen on")
 	flag.StringVar(&opts.tlsCertPath, "tls-cert", "", "the path to a TLS certificate (optional)")
 	flag.StringVar(&opts.tlsKeyPath, "tls-key", "", "the path to a TLS key file (optional)")
 	flag.Uint64Var(&opts.logLevel, "log-level", uint64(logrus.InfoLevel), "log level (logrus 1-7)")
 	flag.StringVar(&opts.logPath, "log-file", "", "log file to write to")
-	flag.StringVar(&opts.zcashConfPath, "conf-file", "", "conf file to pull RPC creds from")
+	flag.StringVar(&opts.hush3ConfPath, "conf-file", "", "conf file to pull RPC creds from")
 	flag.IntVar(&opts.cacheSize, "cache-size", 40000, "number of blocks to hold in the cache")
 
 	// TODO prod metrics
 	// TODO support config from file and env vars
 	flag.Parse()
 
-	if opts.zcashConfPath == "" {
+	if opts.hush3ConfPath == "" {
 		flag.Usage()
 		os.Exit(1)
 	}
 
 	if opts.tlsCertPath == "" || opts.tlsKeyPath == "" {
 		println("Please specify a TLS certificate/key to use. You can use a self-signed certificate.")
-		println("See 'https://github.com/adityapk00/lightwalletd/blob/master/README.md#running-your-own-zeclite-lightwalletd'")
+		println("See 'https://github.com/DenioD/lightwalletd/blob/master/README.md#running-your-own-hushlite-lightwalletd'")
 		os.Exit(1)
 	}
 
@@ -148,17 +148,17 @@ func main() {
 		reflection.Register(server)
 	}
 
-	// Initialize Zcash RPC client. Right now (Jan 2018) this is only for
+	// Initialize Hush RPC client. Right now (Jan 2018) this is only for
 	// sending transactions, but in the future it could back a different type
 	// of block streamer.
 
-	rpcClient, err := frontend.NewZRPCFromConf(opts.zcashConfPath)
+	rpcClient, err := frontend.NewZRPCFromConf(opts.hush3ConfPath)
 	if err != nil {
 		log.WithFields(logrus.Fields{
 			"error": err,
-		}).Warn("zcash.conf failed, will try empty credentials for rpc")
+		}).Warn("HUSH3.conf failed, will try empty credentials for rpc")
 
-		rpcClient, err = frontend.NewZRPCFromCreds("127.0.0.1:8232", "", "")
+		rpcClient, err = frontend.NewZRPCFromCreds("127.0.0.1:18031", "", "")
 
 		if err != nil {
 			log.WithFields(logrus.Fields{
