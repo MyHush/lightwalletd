@@ -40,7 +40,7 @@ You'll need to use the certificate generated from step 1
 go run cmd/server/main.go -bind-addr 127.0.0.1:9069 -conf-file ~/.komodo/HUSH3/HUSH3.conf  -tls-cert cert.pem -tls-key key.pem
 ```
 
-#### 4. Point the `zecwallet-cli` to this server
+#### 4. Point the `silentdragon-cli` to this server
 ```
-./zecwallet-cli --server https://127.0.0.1:9069 --dangerous
+./silentdragon-cli --server https://127.0.0.1:9069 --dangerous
 ```
