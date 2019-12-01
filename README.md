@@ -38,7 +38,7 @@ insightexplorer=1
 #### 3. Run the frontend:
 You'll need to use the certificate generated from step 1
 ```
-go run cmd/server/main.go -bind-addr 127.0.0.1:9067 -conf-file ~/.zcash/zcash.conf  -tls-cert cert.pem -tls-key key.pem
+go run cmd/server/main.go -bind-addr 127.0.0.1:9067 -conf-file ~/.komodo/HUSH3/HUSH3.conf  -tls-cert cert.pem -tls-key key.pem
 ```
 
 #### 4. Point the `zecwallet-cli` to this server
