@@ -168,14 +168,14 @@ func main() {
 	}
 
 	// Get the sapling activation height from the RPC
-	saplingHeight, blockHeight, chainName, branchID, difficulty, err := common.GetSaplingInfo(rpcClient)
+	saplingHeight, blockHeight, chainName, branchID, difficulty, longestchain, notarized, err := common.GetSaplingInfo(rpcClient)
 	if err != nil {
 		log.WithFields(logrus.Fields{
 			"error": err,
 		}).Warn("Unable to get sapling activation height")
 	}
 
-	log.Info("Got sapling height ", saplingHeight, " chain ", chainName, " branchID ", branchID," difficulty ", difficulty,)
+	log.Info("Got sapling height ", saplingHeight, " chain ", chainName, " branchID ", branchID," difficulty ", difficulty,longestchain, " longestchain ",notarized," notarized ")
 
 	// Initialize the cache
 	cache := common.NewBlockCache(opts.cacheSize)

@@ -348,6 +348,8 @@ type LightdInfo struct {
 	ConsensusBranchId       string   `protobuf:"bytes,6,opt,name=consensusBranchId,proto3" json:"consensusBranchId,omitempty"`
 	BlockHeight             uint64   `protobuf:"varint,7,opt,name=blockHeight,proto3" json:"blockHeight,omitempty"`
 	Difficulty              uint64   `protobuf:"varint,8,opt,name=difficulty,proto3" json:"difficulty,omitempty"`
+	Longestchain            uint64   `protobuf:"varint,9,opt,name=longestchain,proto3" json:"longestchain,omitempty"`
+	Notarized               uint64   `protobuf:"varint,10,opt,name=notarized,proto3" json:"notarized,omitempty"`
 	XXX_NoUnkeyedLiteral    struct{} `json:"-"`
 	XXX_unrecognized        []byte   `json:"-"`
 	XXX_sizecache           int32    `json:"-"`
@@ -422,6 +424,18 @@ func (m *LightdInfo) GetConsensusBranchId() string {
 func (m *LightdInfo) Getdifficulty() uint64 {
 	if m != nil {
 		return m.Difficulty
+	}
+	return 0
+}
+func (m *LightdInfo) Getlongestchain() uint64 {
+	if m != nil {
+		return m.Longestchain
+	}
+	return 0
+}
+func (m *LightdInfo) Getnotarized() uint64 {
+	if m != nil {
+		return m.Notarized
 	}
 	return 0
 }
