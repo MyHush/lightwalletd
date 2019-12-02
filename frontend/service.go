@@ -229,7 +229,7 @@ func (s *SqlStreamer) GetTransaction(ctx context.Context, txf *walletrpc.TxFilte
 
 // GetLightdInfo gets the LightWalletD (this server) info
 func (s *SqlStreamer) GetLightdInfo(ctx context.Context, in *walletrpc.Empty) (*walletrpc.LightdInfo, error) {
-	saplingHeight, blockHeight, chainName, consensusBranchId, err := common.GetSaplingInfo(s.client)
+	saplingHeight, blockHeight, chainName, consensusBranchId, difficulty, longestchain, notarized,  err := common.GetSaplingInfo(s.client)
 
 	if err != nil {
 		s.log.WithFields(logrus.Fields{
@@ -242,12 +242,15 @@ func (s *SqlStreamer) GetLightdInfo(ctx context.Context, in *walletrpc.Empty) (*
 	// A success will return code 0 and message txhash.
 	return &walletrpc.LightdInfo{
 		Version:                 "0.1-hushlightd",
-		Vendor:                  "HushWallet LightWalletD",
+		Vendor:                  "Silentdragonlite LightWalletD",
 		TaddrSupport:            true,
 		ChainName:               chainName,
 		SaplingActivationHeight: uint64(saplingHeight),
 		ConsensusBranchId:       consensusBranchId,
 		BlockHeight:             uint64(blockHeight),
+		Difficulty:              uint64(difficulty),
+		Longestchain:            uint64(longestchain),
+		Notarized:               uint64(notarized),
 	}, nil
 }
 
