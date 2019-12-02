@@ -347,6 +347,7 @@ type LightdInfo struct {
 	SaplingActivationHeight uint64   `protobuf:"varint,5,opt,name=saplingActivationHeight,proto3" json:"saplingActivationHeight,omitempty"`
 	ConsensusBranchId       string   `protobuf:"bytes,6,opt,name=consensusBranchId,proto3" json:"consensusBranchId,omitempty"`
 	BlockHeight             uint64   `protobuf:"varint,7,opt,name=blockHeight,proto3" json:"blockHeight,omitempty"`
+	Difficulty              uint64   `protobuf:"varint,8,opt,name=difficulty,proto3" json:"difficulty,omitempty"`
 	XXX_NoUnkeyedLiteral    struct{} `json:"-"`
 	XXX_unrecognized        []byte   `json:"-"`
 	XXX_sizecache           int32    `json:"-"`
@@ -417,6 +418,12 @@ func (m *LightdInfo) GetConsensusBranchId() string {
 		return m.ConsensusBranchId
 	}
 	return ""
+}
+func (m *LightdInfo) Getdifficulty() uint64 {
+	if m != nil {
+		return m.Difficulty
+	}
+	return 0
 }
 
 func (m *LightdInfo) GetBlockHeight() uint64 {
