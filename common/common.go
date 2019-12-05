@@ -55,6 +55,40 @@ func GetSaplingInfo(rpcClient *rpcclient.Client) (int, int, string, string, int,
 	return int(saplingHeight), int(blockHeight), chainName, branchID, int(difficulty), int(longestchain), int(notarized), nil
 }
 
+func GetCoinsupply(rpcClient *rpcclient.Client) (string, string, int, int, int,int, error) {
+	result1, rpcErr := rpcClient.RawRequest("coinsupply", make([]json.RawMessage, 0))
+
+	var err error
+	var errCode int64
+
+
+	// For some reason, the error responses are not JSON
+	if rpcErr != nil {
+		errParts := strings.SplitN(rpcErr.Error(), ":", 2)
+		errCode, err = strconv.ParseInt(errParts[0], 10, 32)
+		//Check to see if we are requesting a height the hushd doesn't have yet
+		if err == nil && errCode == -8 {
+			return "","", -1, -1,-1,-1, nil
+		}
+		return "","", -1, -1,-1,-1, errors.Wrap(rpcErr, "error requesting coinsupply")
+	}
+
+	var f interface{}
+	err = json.Unmarshal(result1, &f)
+	if err != nil {
+		return "","", -1, -1,-1,-1, errors.Wrap(err, "error reading JSON response")
+	}
+
+	result := f.(map[string]interface{})["result"].(string)
+	coin := f.(map[string]interface{})["coin"].(string)
+	height := f.(map[string]interface{})["height"].(float64)
+	supply := f.(map[string]interface{})["supply"].(float64)
+	zfunds := f.(map[string]interface{})["zfunds"].(float64)
+	total := f.(map[string]interface{})["total"].(float64)
+
+	return result,coin, int(height), int(supply),int(zfunds), int(total),  nil
+}
+
 func getBlockFromRPC(rpcClient *rpcclient.Client, height int) (*walletrpc.CompactBlock, error) {
 	params := make([]json.RawMessage, 2)
 	params[0] = json.RawMessage("\"" + strconv.Itoa(height) + "\"")

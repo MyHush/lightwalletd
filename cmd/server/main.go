@@ -179,6 +179,16 @@ func main() {
 
 	log.Info("Got sapling height ", saplingHeight, " chain ", chainName, " branchID ", branchID," difficulty ", difficulty,longestchain, " longestchain ",notarized," notarized ")
 
+	// Get the Coinsupply from the RPC
+	 result, coin, height, supply, zfunds, total, err := common.GetCoinsupply(rpcClient)
+	if err != nil {
+		log.WithFields(logrus.Fields{
+			"error": err,
+		}).Warn("Unable to get coinsupply")
+	}
+
+	log.Info( " result ", result, " coin ", coin," height", height, "supply", supply ,"zfunds", zfunds, "total", total)
+
 	// Initialize the cache
 	cache := common.NewBlockCache(opts.cacheSize)
 

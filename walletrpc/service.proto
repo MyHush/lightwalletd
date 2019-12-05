@@ -56,6 +56,14 @@ message LightdInfo {
     uint64 longestchain = 9;
     uint64 notarized = 10;
 }
+message Coinsupply {
+    string result = 1;
+    string coin = 2;
+    uint64 height = 3;
+    uint64 supply = 4;
+    uint64 zfunds = 5;
+    uint64 total = 6;
+}
 
 message TransparentAddress {
     string address = 1;
@@ -81,4 +89,5 @@ service CompactTxStreamer {
 
     // Misc
     rpc GetLightdInfo(Empty) returns (LightdInfo) {}
+    rpc GetCoinsupply(Empty) returns (Coinsupply) {}
 }

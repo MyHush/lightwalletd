@@ -254,6 +254,30 @@ func (s *SqlStreamer) GetLightdInfo(ctx context.Context, in *walletrpc.Empty) (*
 	}, nil
 }
 
+// GetCoinsupply gets the Coinsupply  info
+func (s *SqlStreamer) GetCoinsupply(ctx context.Context, in *walletrpc.Empty) (*walletrpc.Coinsupply, error) {
+	 result, coin, height, supply, zfunds,total,  err := common.GetCoinsupply(s.client)
+
+	if err != nil {
+		s.log.WithFields(logrus.Fields{
+			"error": err,
+		}).Warn("Unable to get Coinsupply")
+		return nil, err
+	}
+
+	// TODO these are called Error but they aren't at the moment.
+	// A success will return code 0 and message txhash.
+	return &walletrpc.Coinsupply{
+		Result:                  result,
+		Coin:                    coin,
+		Height:					uint64(height),
+		Supply:					uint64(supply),
+		Zfunds: 				uint64(zfunds),
+		Total:   	            uint64(total),
+	}, nil
+}
+
+
 // SendTransaction forwards raw transaction bytes to a hushd instance over JSON-RPC
 func (s *SqlStreamer) SendTransaction(ctx context.Context, rawtx *walletrpc.RawTransaction) (*walletrpc.SendResponse, error) {
 	// sendrawtransaction "hexstring" ( allowhighfees )
