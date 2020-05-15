@@ -56,7 +56,7 @@ func (s *SqlStreamer) GetAddressTxids(addressBlockFilter *walletrpc.TransparentA
     var errCode int64
 
     // Test to make sure Address is a single t address
-    match, err := regexp.Match("^R[a-zA-Z0-9]{34}$", []byte(addressBlockFilter.Address))
+    match, err := regexp.Match("^R[a-zA-Z0-9]{33}$", []byte(addressBlockFilter.Address))
     if err != nil || !match {
         s.log.Errorf("Unrecognized address: %s", addressBlockFilter.Address)
         return nil
