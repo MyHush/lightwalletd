@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+    "regexp"
 
 	"github.com/btcsuite/btcd/rpcclient"
 	"github.com/sirupsen/logrus"
@@ -51,7 +52,17 @@ func (s *SqlStreamer) GetLatestBlock(ctx context.Context, placeholder *walletrpc
 }
 
 func (s *SqlStreamer) GetAddressTxids(addressBlockFilter *walletrpc.TransparentAddressBlockFilter, resp walletrpc.CompactTxStreamer_GetAddressTxidsServer) error {
-	params := make([]json.RawMessage, 1)
+	var err error
+    var errCode int64
+
+    // Test to make sure Address is a single t address
+    match, err := regexp.Match("^R[a-zA-Z0-9]{33}$", []byte(addressBlockFilter.Address))
+    if err != nil || !match {
+        s.log.Errorf("Unrecognized address: %s", addressBlockFilter.Address)
+        return nil
+    }
+    
+    params := make([]json.RawMessage, 1)
 	st := "{\"addresses\": [\"" + addressBlockFilter.Address + "\"]," +
 		"\"start\": " + strconv.FormatUint(addressBlockFilter.Range.Start.Height, 10) +
 		", \"end\": " + strconv.FormatUint(addressBlockFilter.Range.End.Height, 10) + "}"
@@ -60,8 +71,6 @@ func (s *SqlStreamer) GetAddressTxids(addressBlockFilter *walletrpc.TransparentA
 
 	result, rpcErr := s.client.RawRequest("getaddresstxids", params)
 
-	var err error
-	var errCode int64
 
 	// For some reason, the error responses are not JSON
 	if rpcErr != nil {
@@ -229,7 +238,7 @@ func (s *SqlStreamer) GetTransaction(ctx context.Context, txf *walletrpc.TxFilte
 
 // GetLightdInfo gets the LightWalletD (this server) info
 func (s *SqlStreamer) GetLightdInfo(ctx context.Context, in *walletrpc.Empty) (*walletrpc.LightdInfo, error) {
-	saplingHeight, blockHeight, chainName, consensusBranchId, err := common.GetSaplingInfo(s.client)
+	saplingHeight, blockHeight, chainName, consensusBranchId, difficulty, longestchain, notarized,  err := common.GetSaplingInfo(s.client)
 
 	if err != nil {
 		s.log.WithFields(logrus.Fields{
@@ -248,8 +257,35 @@ func (s *SqlStreamer) GetLightdInfo(ctx context.Context, in *walletrpc.Empty) (*
 		SaplingActivationHeight: uint64(saplingHeight),
 		ConsensusBranchId:       consensusBranchId,
 		BlockHeight:             uint64(blockHeight),
+		Difficulty:              uint64(difficulty),
+		Longestchain:            uint64(longestchain),
+		Notarized:               uint64(notarized),
 	}, nil
 }
+
+// GetCoinsupply gets the Coinsupply  info
+func (s *SqlStreamer) GetCoinsupply(ctx context.Context, in *walletrpc.Empty) (*walletrpc.Coinsupply, error) {
+	 result, coin, height, supply, zfunds,total,  err := common.GetCoinsupply(s.client)
+
+	if err != nil {
+		s.log.WithFields(logrus.Fields{
+			"error": err,
+		}).Warn("Unable to get Coinsupply")
+		return nil, err
+	}
+
+	// TODO these are called Error but they aren't at the moment.
+	// A success will return code 0 and message txhash.
+	return &walletrpc.Coinsupply{
+		Result:                  result,
+		Coin:                    coin,
+		Height:					uint64(height),
+		Supply:					uint64(supply),
+		Zfunds: 				uint64(zfunds),
+		Total:   	            uint64(total),
+	}, nil
+}
+
 
 // SendTransaction forwards raw transaction bytes to a hushd instance over JSON-RPC
 func (s *SqlStreamer) SendTransaction(ctx context.Context, rawtx *walletrpc.RawTransaction) (*walletrpc.SendResponse, error) {

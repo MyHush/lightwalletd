@@ -347,6 +347,9 @@ type LightdInfo struct {
 	SaplingActivationHeight uint64   `protobuf:"varint,5,opt,name=saplingActivationHeight,proto3" json:"saplingActivationHeight,omitempty"`
 	ConsensusBranchId       string   `protobuf:"bytes,6,opt,name=consensusBranchId,proto3" json:"consensusBranchId,omitempty"`
 	BlockHeight             uint64   `protobuf:"varint,7,opt,name=blockHeight,proto3" json:"blockHeight,omitempty"`
+	Difficulty              uint64   `protobuf:"varint,8,opt,name=difficulty,proto3" json:"difficulty,omitempty"`
+	Longestchain            uint64   `protobuf:"varint,9,opt,name=longestchain,proto3" json:"longestchain,omitempty"`
+	Notarized               uint64   `protobuf:"varint,10,opt,name=notarized,proto3" json:"notarized,omitempty"`
 	XXX_NoUnkeyedLiteral    struct{} `json:"-"`
 	XXX_unrecognized        []byte   `json:"-"`
 	XXX_sizecache           int32    `json:"-"`
@@ -418,10 +421,107 @@ func (m *LightdInfo) GetConsensusBranchId() string {
 	}
 	return ""
 }
+func (m *LightdInfo) Getdifficulty() uint64 {
+	if m != nil {
+		return m.Difficulty
+	}
+	return 0
+}
+func (m *LightdInfo) Getlongestchain() uint64 {
+	if m != nil {
+		return m.Longestchain
+	}
+	return 0
+}
+func (m *LightdInfo) Getnotarized() uint64 {
+	if m != nil {
+		return m.Notarized
+	}
+	return 0
+}
 
 func (m *LightdInfo) GetBlockHeight() uint64 {
 	if m != nil {
 		return m.BlockHeight
+	}
+	return 0
+}
+
+type Coinsupply struct {
+	Result                  string   `protobuf:"bytes,1,opt,name=result,proto3" json:"result,omitempty"`
+	Coin                    string   `protobuf:"bytes,2,opt,name=coin,proto3" json:"coin,omitempty"`
+	Height                  uint64    `protobuf:"varint,3,opt,name=height,proto3" json:"height,omitempty"`
+	Supply                  uint64   `protobuf:"varint,4,opt,name=supply,proto3" json:"supply,omitempty"`
+	Zfunds                  uint64   `protobuf:"varint,5,opt,name=zfunds,proto3" json:"zfunds,omitempty"`
+	Total                   uint64   `protobuf:"varint,6,opt,name=total,proto3" json:"total,omitempty"`
+	XXX_NoUnkeyedLiteral    struct{} `json:"-"`
+	XXX_unrecognized        []byte   `json:"-"`
+	XXX_sizecache           int32    `json:"-"`
+}
+
+func (m *Coinsupply) Reset()         { *m = Coinsupply{} }
+func (m *Coinsupply) String() string { return proto.CompactTextString(m) }
+func (*Coinsupply) ProtoMessage()    {}
+func (*Coinsupply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a0b84a42fa06f626, []int{7}
+}
+
+func (m *Coinsupply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Coinsupply.Unmarshal(m, b)
+}
+func (m *Coinsupply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Coinsupply.Marshal(b, m, deterministic)
+}
+func (m *Coinsupply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Coinsupply.Merge(m, src)
+}
+func (m *Coinsupply) XXX_Size() int {
+	return xxx_messageInfo_Coinsupply.Size(m)
+}
+func (m *Coinsupply) XXX_DiscardUnknown() {
+	xxx_messageInfo_Coinsupply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Coinsupply proto.InternalMessageInfo
+
+func (m *Coinsupply) GetResult() string {
+	if m != nil {
+		return m.Result
+	}
+	return ""
+}
+
+func (m *Coinsupply) GetCoin() string {
+	if m != nil {
+		return m.Coin
+	}
+	return ""
+}
+
+func (m *Coinsupply) GetHeight() uint64 {
+	if m != nil {
+		return m.Height
+	}
+	return 0
+}
+
+func (m *Coinsupply) GetSupply() uint64 {
+	if m != nil {
+		return m.Supply
+	}
+	return 0
+}
+
+func (m *Coinsupply) GetZfunds() uint64 {
+	if m != nil {
+		return m.Zfunds
+	}
+	return 0
+}
+
+func (m *Coinsupply) GetTotal() uint64 {
+	if m != nil {
+		return m.Total
 	}
 	return 0
 }
@@ -521,6 +621,7 @@ func init() {
 	proto.RegisterType((*ChainSpec)(nil), "cash.z.wallet.sdk.rpc.ChainSpec")
 	proto.RegisterType((*Empty)(nil), "cash.z.wallet.sdk.rpc.Empty")
 	proto.RegisterType((*LightdInfo)(nil), "cash.z.wallet.sdk.rpc.LightdInfo")
+	proto.RegisterType((*Coinsupply)(nil), "cash.z.wallet.sdk.rpc.Coinsupply")
 	proto.RegisterType((*TransparentAddress)(nil), "cash.z.wallet.sdk.rpc.TransparentAddress")
 	proto.RegisterType((*TransparentAddressBlockFilter)(nil), "cash.z.wallet.sdk.rpc.TransparentAddressBlockFilter")
 }
@@ -595,6 +696,7 @@ type CompactTxStreamerClient interface {
 	GetAddressTxids(ctx context.Context, in *TransparentAddressBlockFilter, opts ...grpc.CallOption) (CompactTxStreamer_GetAddressTxidsClient, error)
 	// Misc
 	GetLightdInfo(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*LightdInfo, error)
+	GetCoinsupply(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Coinsupply, error)
 }
 
 type compactTxStreamerClient struct {
@@ -713,6 +815,14 @@ func (c *compactTxStreamerClient) GetLightdInfo(ctx context.Context, in *Empty, 
 	}
 	return out, nil
 }
+func (c *compactTxStreamerClient) GetCoinsupply(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Coinsupply, error) {
+	out := new(Coinsupply)
+	err := c.cc.Invoke(ctx, "/cash.z.wallet.sdk.rpc.CompactTxStreamer/GetCoinsupply", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
 
 // CompactTxStreamerServer is the server API for CompactTxStreamer service.
 type CompactTxStreamerServer interface {
@@ -727,6 +837,7 @@ type CompactTxStreamerServer interface {
 	GetAddressTxids(*TransparentAddressBlockFilter, CompactTxStreamer_GetAddressTxidsServer) error
 	// Misc
 	GetLightdInfo(context.Context, *Empty) (*LightdInfo, error)
+	GetCoinsupply(context.Context, *Empty) (*Coinsupply, error)
 }
 
 // UnimplementedCompactTxStreamerServer can be embedded to have forward compatible implementations.
@@ -753,6 +864,9 @@ func (*UnimplementedCompactTxStreamerServer) GetAddressTxids(req *TransparentAdd
 }
 func (*UnimplementedCompactTxStreamerServer) GetLightdInfo(ctx context.Context, req *Empty) (*LightdInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetLightdInfo not implemented")
+}
+func (*UnimplementedCompactTxStreamerServer) GetCoinsupply(ctx context.Context, req *Empty) (*Coinsupply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCoinsupply not implemented")
 }
 
 func RegisterCompactTxStreamerServer(s *grpc.Server, srv CompactTxStreamerServer) {
@@ -891,6 +1005,24 @@ func _CompactTxStreamer_GetLightdInfo_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CompactTxStreamer_GetCoinsupply_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CompactTxStreamerServer).GetCoinsupply(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/cash.z.wallet.sdk.rpc.CompactTxStreamer/GetCoinsupply",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CompactTxStreamerServer).GetCoinsupply(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _CompactTxStreamer_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "cash.z.wallet.sdk.rpc.CompactTxStreamer",
 	HandlerType: (*CompactTxStreamerServer)(nil),
@@ -914,6 +1046,10 @@ var _CompactTxStreamer_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetLightdInfo",
 			Handler:    _CompactTxStreamer_GetLightdInfo_Handler,
+		},
+		{
+			MethodName: "GetCoinsupply",
+			Handler:    _CompactTxStreamer_GetCoinsupply_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
