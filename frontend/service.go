@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+    "regexp"
 
 	"github.com/btcsuite/btcd/rpcclient"
 	"github.com/sirupsen/logrus"
@@ -51,7 +52,17 @@ func (s *SqlStreamer) GetLatestBlock(ctx context.Context, placeholder *walletrpc
 }
 
 func (s *SqlStreamer) GetAddressTxids(addressBlockFilter *walletrpc.TransparentAddressBlockFilter, resp walletrpc.CompactTxStreamer_GetAddressTxidsServer) error {
-	params := make([]json.RawMessage, 1)
+	var err error
+    var errCode int64
+
+    // Test to make sure Address is a single t address
+    match, err := regexp.Match("^R[a-zA-Z0-9]{33}$", []byte(addressBlockFilter.Address))
+    if err != nil || !match {
+        s.log.Errorf("Unrecognized address: %s", addressBlockFilter.Address)
+        return nil
+    }
+    
+    params := make([]json.RawMessage, 1)
 	st := "{\"addresses\": [\"" + addressBlockFilter.Address + "\"]," +
 		"\"start\": " + strconv.FormatUint(addressBlockFilter.Range.Start.Height, 10) +
 		", \"end\": " + strconv.FormatUint(addressBlockFilter.Range.End.Height, 10) + "}"
@@ -60,8 +71,6 @@ func (s *SqlStreamer) GetAddressTxids(addressBlockFilter *walletrpc.TransparentA
 
 	result, rpcErr := s.client.RawRequest("getaddresstxids", params)
 
-	var err error
-	var errCode int64
 
 	// For some reason, the error responses are not JSON
 	if rpcErr != nil {
