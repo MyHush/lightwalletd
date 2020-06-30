@@ -19,7 +19,7 @@ This version of lightwalletd extends lightwalletd and:
 
 #### 0. First, install [Go >= 1.11](https://golang.org/dl/#stable).
 
-#### 1. Run a zcash node.
+#### 1. Run a Hush node.
 Start a `hushd` with the following options:
 ```
 server=1
