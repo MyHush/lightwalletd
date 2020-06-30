@@ -12,7 +12,7 @@ This version of lightwalletd extends lightwalletd and:
 * Adds several new RPC calls for lightclients
 * Lots of perf improvements
   * Replaces SQLite with in-memory cache for Compact Blocks
-  * Replace local Txstore, delegating Tx lookups to Zcashd
+  * Replace local Txstore, delegating Tx lookups to hushd
   * Remove the need for a separate ingestor
 
 ## Running your own SDL lightwalletd
