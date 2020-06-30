@@ -64,7 +64,7 @@ If you have a certificate that you want to use (either self signed, or from a ce
 go run cmd/server/main.go -bind-addr 127.0.0.1:9067 -conf-file ~/.komodo/HUSH3/HUSH3.conf  -tls-cert /etc/letsencrypt/live/YOURWEBSITE/fullchain.pem -tls-key /etc/letsencrypt/live/YOURWEBSITE/privkey.pem
 ```
 
-You should start seeing the frontend ingest and cache the zcash blocks after ~15 seconds. 
+You should start seeing the frontend ingest and cache the Hush blocks after ~15 seconds. 
 
 #### 4. Point the `silentdragonlite-cli` to this server
 Connect to your server!
