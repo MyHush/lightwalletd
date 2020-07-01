@@ -17,7 +17,7 @@ This version of lightwalletd extends lightwalletd and:
 
 ## Running your own SDL lightwalletd
 
-#### 0. First, install [Go >= 1.13](Here is a little guide for ubuntu : https://tecadmin.net/install-go-on-ubuntu/).
+#### 0. First, install [Go >= 1.13] [Here is a little guide for ubuntu](https://tecadmin.net/install-go-on-ubuntu/)
 
 #### 1. Run a Hush node.
 Start a `hushd` with the following options:
