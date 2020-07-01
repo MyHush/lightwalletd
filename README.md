@@ -1,8 +1,8 @@
 # Overview
 
-SilentDragonLite (SDL) is a fork of silentdragonlite lightwalletd, which is a fork of [lightwalletd](https://github.com/adityapk00/lightwalletd) from the ECC. 
+Lightwalletd is a fork of [lightwalletd](https://github.com/adityapk00/lightwalletd) from the ECC. 
 
-It is a backend service that provides a bandwidth-efficient interface to the Hush blockchain for the [SilentDragonLite cli](https://github.com/MyHush/silentdragonlite-light-cli).
+It is a backend service that provides a bandwidth-efficient interface to the Hush blockchain for the [SilentDragonLite cli](https://github.com/MyHush/silentdragonlite-light-cli) and [SilentDragonLite]((https://github.com/MyHush/SilentDragonLite)
 
 ## Changes from upstream lightwalletd
 This version of lightwalletd extends lightwalletd and:
@@ -52,13 +52,8 @@ server {
 ```
 
 #### 3. Run the frontend:
-You can run the gRPC server with or without TLS, depending on how you configured step 2. If you are using NGINX as a reverse proxy and are letting NGINX handle the TLS authentication, then run the frontend with `-no-tls`
 
-```
-go run cmd/server/main.go -bind-addr 127.0.0.1:9067 -conf-file ~/.komodo/HUSH3/HUSH3.conf -no-tls
-```
-
-If you have a certificate that you want to use (either self signed, or from a certificate authority), pass the certificate to the frontend:
+If you have a certificate that you want to use (from a certificate authority), pass the certificate to the frontend:
 
 ```
 go run cmd/server/main.go -bind-addr 127.0.0.1:9067 -conf-file ~/.komodo/HUSH3/HUSH3.conf  -tls-cert /etc/letsencrypt/live/YOURWEBSITE/fullchain.pem -tls-key /etc/letsencrypt/live/YOURWEBSITE/privkey.pem
